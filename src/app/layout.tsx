@@ -6,6 +6,7 @@ import TerminalFooter from "@/components/layout/TerminalFooter";
 import SessionProvider from "@/components/auth/SessionProvider";
 import { ThemeProvider } from "@/components/layout/ThemeContext";
 import CommandPalette from "@/components/layout/CommandPalette";
+import KeymapModal from "@/components/layout/KeymapModal";
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
@@ -28,6 +29,7 @@ export default function RootLayout({
         <SessionProvider>
           <ThemeProvider>
             <CommandPalette />
+            <KeymapModal />
             <div className="flex flex-col min-h-screen">
               <TerminalHeader />
               <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">

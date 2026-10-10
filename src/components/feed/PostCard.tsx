@@ -10,16 +10,27 @@ import { User, Clock, MessageSquare } from "lucide-react";
 
 interface PostCardProps {
   post: PostWithAuthor;
+  isFocused?: boolean;
+  cardId?: string;
 }
 
-export default function PostCard({ post }: PostCardProps) {
+export default function PostCard({ post, isFocused, cardId }: PostCardProps) {
   const authorName = post.author?.name || post.author?.email || "anon_op";
 
   return (
-    <article className="flex flex-col bg-[#0d131d] border border-[#1d273a] hover:border-[var(--accent)] transition-all duration-200 overflow-hidden group hover:shadow-[0_0_20px_rgba(0,255,102,0.12)] hud-chamfer relative">
+    <article
+      id={cardId}
+      className={`flex flex-col bg-[#0d131d] border transition-all duration-200 overflow-hidden group hud-chamfer relative ${
+        isFocused
+          ? "border-[var(--accent)] shadow-[0_0_25px_rgba(0,255,102,0.25)] ring-1 ring-[var(--accent)] bg-[#0f1724]"
+          : "border-[#1d273a] hover:border-[var(--accent)] hover:shadow-[0_0_20px_rgba(0,255,102,0.12)]"
+      }`}
+    >
       {/* Top Corner HUD accent mark */}
       <div
-        className="absolute top-0 right-0 w-3 h-3 bg-[var(--accent)] opacity-40 group-hover:opacity-100 transition-opacity pointer-events-none"
+        className={`absolute top-0 right-0 w-3 h-3 bg-[var(--accent)] transition-opacity pointer-events-none ${
+          isFocused ? "opacity-100 animate-pulse" : "opacity-40 group-hover:opacity-100"
+        }`}
         aria-hidden="true"
       />
 
@@ -27,6 +38,11 @@ export default function PostCard({ post }: PostCardProps) {
       <div className="flex items-center justify-between px-3.5 py-2 bg-[#101724] border-b border-[#1d273a] text-[11px] font-mono text-[#8b949e]">
         <div className="flex items-center gap-2">
           <CategoryBadge category={post.category} />
+          {isFocused && (
+            <span className="text-[9px] px-1 py-0.5 border border-[var(--accent)] text-[var(--accent)] bg-[var(--accent-muted)] font-bold animate-pulse">
+              [FOCUSED]
+            </span>
+          )}
           <span className="text-[#32435e] select-none">|</span>
           <span className="flex items-center gap-1 text-[#6b7280]">
             <Clock className="w-3 h-3 text-[#4b5563]" />
@@ -48,8 +64,17 @@ export default function PostCard({ post }: PostCardProps) {
       <div className="p-4 flex-1 flex flex-col justify-between">
         <div>
           <Link href={`/dispatch/${post.id}`} className="block">
-            <h2 className="text-base font-bold font-mono text-[#e6edf3] group-hover:text-[var(--accent)] transition-colors line-clamp-2 mb-2 leading-snug">
-              {post.title}
+            <h2
+              className={`text-base font-bold font-mono transition-colors line-clamp-2 mb-2 leading-snug flex items-start gap-1.5 ${
+                isFocused
+                  ? "text-[var(--accent)] text-phosphor-glow"
+                  : "text-[#e6edf3] group-hover:text-[var(--accent)]"
+              }`}
+            >
+              {isFocused && (
+                <span className="text-[var(--accent)] shrink-0 animate-blink">&gt;</span>
+              )}
+              <span>{post.title}</span>
             </h2>
           </Link>
 

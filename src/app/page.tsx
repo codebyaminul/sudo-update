@@ -4,6 +4,7 @@ import { PostCategory, PostStatus } from "@prisma/client";
 import CategoryFilter from "@/components/feed/CategoryFilter";
 import TerminalSearch from "@/components/feed/TerminalSearch";
 import FeedGrid from "@/components/feed/FeedGrid";
+import CurlBanner from "@/components/feed/CurlBanner";
 import { Terminal, ShieldCheck, Cpu, Database, Search, X } from "lucide-react";
 import { PostWithAuthor } from "@/types";
 import { DEMO_POSTS } from "@/lib/mock-data";
@@ -178,6 +179,9 @@ export default async function HomePage({ searchParams }: PageProps) {
           <span className="text-[#00f0ff]">SORT: [{currentSort.toUpperCase()}]</span>
         </div>
       </div>
+
+      {/* Real Terminal Curl Command Bar */}
+      <CurlBanner />
 
       {/* Terminal CLI Search Command Bar */}
       <TerminalSearch />
