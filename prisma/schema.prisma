@@ -67,6 +67,7 @@ model User {
   sessions      Session[]
   posts         Post[]
   boosts        Boost[]
+  comments      Comment[]
 
   @@index([email])
 }
@@ -90,6 +91,7 @@ model Post {
   authorId  String
   author    User         @relation(fields: [authorId], references: [id], onDelete: Cascade)
   boosts    Boost[]
+  comments  Comment[]
   createdAt DateTime     @default(now())
   updatedAt DateTime     @updatedAt
 
@@ -109,4 +111,18 @@ model Boost {
   @@unique([userId, postId])
   @@index([postId])
   @@index([userId])
+}
+
+model Comment {
+  id        String   @id @default(cuid())
+  content   String   @db.Text
+  postId    String
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  authorId  String
+  author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([postId, createdAt(sort: Asc)])
+  @@index([authorId])
 }

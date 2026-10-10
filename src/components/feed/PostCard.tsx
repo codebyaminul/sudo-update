@@ -1,11 +1,12 @@
 import React from "react";
+import Link from "next/link";
 import TerminalImage from "@/components/ui/TerminalImage";
 import SourceBadge from "@/components/feed/SourceBadge";
 import CategoryBadge from "@/components/ui/CategoryBadge";
 import BoostButton from "@/components/feed/BoostButton";
 import { formatTerminalDate } from "@/lib/utils";
 import { PostWithAuthor } from "@/types";
-import { User, Clock } from "lucide-react";
+import { User, Clock, MessageSquare } from "lucide-react";
 
 interface PostCardProps {
   post: PostWithAuthor;
@@ -39,29 +40,42 @@ export default function PostCard({ post }: PostCardProps) {
       </div>
 
       {/* Media Thumbnail */}
-      <div className="relative">
+      <Link href={`/dispatch/${post.id}`} className="relative block group/img">
         <TerminalImage src={post.imageUrl} alt={post.title} aspectRatio="video" />
-      </div>
+      </Link>
 
       {/* Body Content */}
       <div className="p-4 flex-1 flex flex-col justify-between">
         <div>
-          <h2 className="text-base font-bold font-mono text-[#e6edf3] group-hover:text-[var(--accent)] transition-colors line-clamp-2 mb-2 leading-snug">
-            {post.title}
-          </h2>
+          <Link href={`/dispatch/${post.id}`} className="block">
+            <h2 className="text-base font-bold font-mono text-[#e6edf3] group-hover:text-[var(--accent)] transition-colors line-clamp-2 mb-2 leading-snug">
+              {post.title}
+            </h2>
+          </Link>
 
           <p className="text-xs font-mono text-[#8b949e] line-clamp-3 mb-4 leading-relaxed whitespace-pre-line">
             {post.content}
           </p>
         </div>
 
-        {/* Footer info: Boost Signal & Source Link */}
-        <div className="pt-3 border-t border-[#1d273a] flex items-center justify-between gap-2">
-          <BoostButton
-            postId={post.id}
-            initialCount={post._count?.boosts ?? 0}
-            initialHasBoosted={post.hasBoosted ?? false}
-          />
+        {/* Footer info: Boost Signal, Comments & Source Link */}
+        <div className="pt-3 border-t border-[#1d273a] flex items-center justify-between gap-2 flex-wrap">
+          <div className="flex items-center gap-2">
+            <BoostButton
+              postId={post.id}
+              initialCount={post._count?.boosts ?? 0}
+              initialHasBoosted={post.hasBoosted ?? false}
+            />
+            <Link
+              href={`/dispatch/${post.id}#comments`}
+              className="flex items-center gap-1 text-[11px] font-mono text-[#8b949e] hover:text-[var(--accent)] transition-colors px-2 py-1 border border-[#1f2638] hover:border-[var(--accent)] bg-[#0c1018]"
+              title="View Operator Field Notes"
+            >
+              <MessageSquare className="w-3 h-3" />
+              <span>{post._count?.comments ?? 0}</span>
+            </Link>
+          </div>
+
           <div className="flex items-center gap-2">
             <SourceBadge url={post.sourceUrl} />
             <span className="text-[10px] font-mono text-[#4b5563] hidden sm:inline select-none">

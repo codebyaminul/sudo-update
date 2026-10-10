@@ -62,6 +62,7 @@ async function getApprovedPosts(
         _count: {
           select: {
             boosts: true,
+            comments: true,
           },
         },
         boosts: userId
@@ -93,7 +94,10 @@ async function getApprovedPosts(
   // Offline / development demo fallback
   let filtered = DEMO_POSTS.map((p) => ({
     ...p,
-    _count: { boosts: Math.floor(Math.random() * 25) + 3 },
+    _count: {
+      boosts: Math.floor(Math.random() * 25) + 3,
+      comments: Math.floor(Math.random() * 8) + 1,
+    },
     hasBoosted: false,
   }));
 

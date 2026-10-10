@@ -1,13 +1,23 @@
-import { Post as PrismaPost, PostCategory, PostStatus, User as PrismaUser } from "@prisma/client";
+import { Post as PrismaPost, PostCategory, PostStatus, User as PrismaUser, Comment as PrismaComment } from "@prisma/client";
 
 export { PostCategory, PostStatus };
 
+export type CommentWithAuthor = PrismaComment & {
+  author: Pick<PrismaUser, "id" | "name" | "email" | "image"> & {
+    isAdmin?: boolean;
+  };
+};
+
 export type PostWithAuthor = PrismaPost & {
-  author: Pick<PrismaUser, "id" | "name" | "email" | "image">;
+  author: Pick<PrismaUser, "id" | "name" | "email" | "image"> & {
+    isAdmin?: boolean;
+  };
   _count?: {
     boosts: number;
+    comments?: number;
   };
   hasBoosted?: boolean;
+  comments?: CommentWithAuthor[];
 };
 
 export interface PostSubmissionPayload {

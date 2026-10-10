@@ -36,5 +36,15 @@ export const moderatePostSchema = z.object({
   category: z.nativeEnum(PostCategory).optional(),
 });
 
+export const createCommentSchema = z.object({
+  content: z
+    .string()
+    .trim()
+    .min(1, "Field note cannot be empty")
+    .max(1500, "Field note cannot exceed 1500 characters"),
+});
+
 export type CreatePostInput = z.infer<typeof createPostSchema>;
 export type ModeratePostInput = z.infer<typeof moderatePostSchema>;
+export type CreateCommentInput = z.infer<typeof createCommentSchema>;
+
