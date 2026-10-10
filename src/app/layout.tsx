@@ -4,6 +4,8 @@ import "./globals.css";
 import TerminalHeader from "@/components/layout/TerminalHeader";
 import TerminalFooter from "@/components/layout/TerminalFooter";
 import SessionProvider from "@/components/auth/SessionProvider";
+import { ThemeProvider } from "@/components/layout/ThemeContext";
+import CommandPalette from "@/components/layout/CommandPalette";
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
@@ -22,18 +24,18 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={`${geistMono.variable} h-full antialiased`}>
-      <body className="min-h-full flex flex-col bg-[#0a0e14] text-[#e5e7eb] font-mono selection:bg-[#00ff66] selection:text-black">
-        {/* Simulated CRT Scanlines */}
-        <div className="fixed inset-0 terminal-scanlines z-50 pointer-events-none opacity-40" />
-
+      <body className="min-h-full flex flex-col bg-[#0a0e14] text-[#e6edf3] font-mono selection:bg-[var(--accent)] selection:text-black">
         <SessionProvider>
-          <div className="flex flex-col min-h-screen">
-            <TerminalHeader />
-            <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
-              {children}
-            </main>
-            <TerminalFooter />
-          </div>
+          <ThemeProvider>
+            <CommandPalette />
+            <div className="flex flex-col min-h-screen">
+              <TerminalHeader />
+              <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+                {children}
+              </main>
+              <TerminalFooter />
+            </div>
+          </ThemeProvider>
         </SessionProvider>
       </body>
     </html>

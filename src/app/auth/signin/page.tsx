@@ -64,16 +64,16 @@ function SignInContent() {
   return (
     <div className="max-w-xl mx-auto my-8 font-mono space-y-6">
       {/* Chassis Window */}
-      <div className="border border-[#1f2937] bg-[#0c1018] shadow-[0_0_25px_rgba(0,255,102,0.15)]">
+      <div className="border border-[#1f2638] bg-[#0c1018] shadow-[0_0_25px_rgba(0,255,102,0.15)] hud-chamfer">
         {/* Top Window Bar */}
-        <div className="flex items-center justify-between px-4 py-2.5 bg-[#111620] border-b border-[#1f2937]">
+        <div className="flex items-center justify-between px-4 py-2.5 bg-[#111620] border-b border-[#1f2638]">
           <div className="flex items-center gap-2">
             <span className="w-2.5 h-2.5 bg-[#ff5555] inline-block" />
             <span className="w-2.5 h-2.5 bg-[#ffb454] inline-block" />
-            <span className="w-2.5 h-2.5 bg-[#00ff66] inline-block" />
+            <span className="w-2.5 h-2.5 bg-[var(--accent)] inline-block" />
             <span className="text-xs text-[#8b949e] ml-2">auth_terminal.sh</span>
           </div>
-          <div className="text-[10px] text-[#00ff66]">CLEARANCE_PROTOCOL // v1.1</div>
+          <div className="text-[10px] text-[var(--accent)]">CLEARANCE_PROTOCOL // v1.2</div>
         </div>
 
         <div className="p-6 space-y-6">

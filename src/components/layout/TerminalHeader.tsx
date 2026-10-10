@@ -1,14 +1,37 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useSession, signIn, signOut } from "next-auth/react";
-import { Terminal, Shield, PlusCircle, LogIn, LogOut, Radio } from "lucide-react";
+import {
+  Terminal,
+  Shield,
+  PlusCircle,
+  LogIn,
+  LogOut,
+  Radio,
+  Tv,
+  Command,
+  Palette,
+} from "lucide-react";
+import { useTheme, TerminalTheme } from "@/components/layout/ThemeContext";
 
 export default function TerminalHeader() {
   const pathname = usePathname();
   const { data: session, status } = useSession();
+  const { theme, setTheme, scanlines, toggleScanlines } = useTheme();
+  const [timecode, setTimecode] = useState("");
+
+  useEffect(() => {
+    const updateClock = () => {
+      const now = new Date();
+      setTimecode(now.toISOString().substring(11, 19) + "Z");
+    };
+    updateClock();
+    const timer = setInterval(updateClock, 1000);
+    return () => clearInterval(timer);
+  }, []);
 
   const navLinks = [
     { href: "/", label: "DISPATCHES", icon: Radio },
@@ -19,30 +42,39 @@ export default function TerminalHeader() {
     navLinks.push({ href: "/admin", label: "ROOT ADMIN", icon: Shield });
   }
 
+  const themes: { id: TerminalTheme; label: string; dotColor: string }[] = [
+    { id: "matrix", label: "MATRIX", dotColor: "#00ff66" },
+    { id: "amber", label: "AMBER", dotColor: "#ffb454" },
+    { id: "cyan", label: "CYAN", dotColor: "#00f0ff" },
+    { id: "synthwave", label: "NEON", dotColor: "#ff007f" },
+  ];
+
   return (
-    <header className="sticky top-0 z-40 border-b border-[#1f2937] bg-[#0a0e14]/90 backdrop-blur-md">
+    <header className="sticky top-0 z-40 border-b border-[#1f2638] bg-[#0a0e14]/95 backdrop-blur-md font-mono select-none">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
+        <div className="flex items-center justify-between h-16 gap-2">
           {/* Logo / Prompt */}
           <div className="flex items-center gap-3">
             <Link
               href="/"
-              className="flex items-center gap-2 text-[#00ff66] font-mono font-bold tracking-wider hover:opacity-90 transition-opacity"
+              className="flex items-center gap-2.5 text-[var(--accent)] font-bold tracking-wider hover:opacity-90 transition-opacity"
             >
-              <div className="w-8 h-8 rounded-none border border-[#00ff66]/50 bg-[#00ff66]/10 flex items-center justify-center">
-                <Terminal className="w-4 h-4 text-[#00ff66]" />
+              <div className="w-8 h-8 border border-[var(--accent)] bg-[var(--accent-muted)] flex items-center justify-center hud-chamfer-top">
+                <Terminal className="w-4 h-4 text-[var(--accent)]" />
               </div>
               <div className="flex flex-col">
-                <span className="text-base text-phosphor-glow">sudo update</span>
-                <span className="text-[10px] text-[#4b5563] tracking-widest font-normal">
-                  COMMUNITY_INTEL_NETWORK
+                <span className="text-base font-extrabold tracking-tight text-phosphor-glow">
+                  sudo update
+                </span>
+                <span className="text-[9px] text-[#8b949e] tracking-widest font-normal uppercase">
+                  COMMUNITY_INTEL_NET
                 </span>
               </div>
             </Link>
           </div>
 
           {/* Navigation Links */}
-          <nav className="hidden md:flex items-center gap-2">
+          <nav className="hidden lg:flex items-center gap-1.5" aria-label="Main Navigation">
             {navLinks.map((link) => {
               const isActive = pathname === link.href;
               const Icon = link.icon;
@@ -52,8 +84,8 @@ export default function TerminalHeader() {
                   href={link.href}
                   className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-mono tracking-wider border transition-all duration-150 ${
                     isActive
-                      ? "border-[#00ff66] text-[#00ff66] bg-[#00ff66]/10 shadow-[0_0_10px_rgba(0,255,102,0.2)]"
-                      : "border-transparent text-[#9ca3af] hover:text-[#00ff66] hover:border-[#1f2937]"
+                      ? "border-[var(--accent)] text-[var(--accent)] bg-[var(--accent-muted)] shadow-[0_0_12px_rgba(0,255,102,0.2)]"
+                      : "border-transparent text-[#8b949e] hover:text-[var(--accent)] hover:border-[#1f2638]"
                   }`}
                 >
                   <Icon className="w-3.5 h-3.5" />
@@ -63,43 +95,99 @@ export default function TerminalHeader() {
             })}
           </nav>
 
-          {/* Auth Controls */}
-          <div className="flex items-center gap-3">
+          {/* HUD Utility Bar: Clock, Themes, Scanline, Auth */}
+          <div className="flex items-center gap-2">
+            {/* Live Clock Ticker */}
+            <div className="hidden xl:flex items-center gap-1.5 px-2 py-1 text-[11px] text-[#6b7280] border border-[#1a2232] bg-[#0c1018]">
+              <span className="w-1.5 h-1.5 rounded-full bg-[var(--accent)] animate-pulse" />
+              <span>{timecode || "00:00:00Z"}</span>
+            </div>
+
+            {/* Quick Command Palette Button */}
+            <button
+              onClick={() => {
+                const event = new KeyboardEvent("keydown", {
+                  key: "k",
+                  ctrlKey: true,
+                });
+                window.dispatchEvent(event);
+              }}
+              className="hidden sm:flex items-center gap-1 px-2 py-1 text-[11px] border border-[#27354a] bg-[#0e1420] text-[#8b949e] hover:text-[var(--accent)] hover:border-[var(--accent)] transition-colors cursor-pointer"
+              title="Open Command Palette (Ctrl+K)"
+            >
+              <Command className="w-3 h-3" />
+              <span>HUD</span>
+              <kbd className="text-[9px] text-[#4b5563] ml-0.5">^K</kbd>
+            </button>
+
+            {/* Scanline CRT Toggle */}
+            <button
+              onClick={toggleScanlines}
+              className={`p-1.5 text-xs border transition-colors cursor-pointer ${
+                scanlines
+                  ? "border-[var(--accent)] text-[var(--accent)] bg-[var(--accent-muted)]"
+                  : "border-[#27354a] text-[#4b5563] hover:text-[#8b949e]"
+              }`}
+              title={`Toggle CRT Scanlines (${scanlines ? "ON" : "OFF"})`}
+              aria-label="Toggle CRT Scanlines"
+            >
+              <Tv className="w-3.5 h-3.5" />
+            </button>
+
+            {/* Phosphor Theme Switcher */}
+            <div className="flex items-center border border-[#1f2638] bg-[#0c1018] p-0.5">
+              {themes.map((t) => (
+                <button
+                  key={t.id}
+                  onClick={() => setTheme(t.id)}
+                  aria-label={`Switch to ${t.label} theme`}
+                  className={`w-5 h-5 flex items-center justify-center transition-all cursor-pointer ${
+                    theme === t.id
+                      ? "bg-black/60 shadow-[0_0_8px_rgba(255,255,255,0.2)] border border-[var(--accent)]"
+                      : "opacity-40 hover:opacity-80"
+                  }`}
+                  title={`${t.label} Phosphor CRT`}
+                >
+                  <span
+                    className="w-2.5 h-2.5 rounded-none"
+                    style={{ backgroundColor: t.dotColor }}
+                  />
+                </button>
+              ))}
+            </div>
+
+            {/* Auth Controls */}
             {status === "loading" ? (
-              <span className="text-xs font-mono text-[#8b949e] animate-pulse">
-                [ AUTH_SYNC... ]
+              <span className="text-xs text-[#8b949e] animate-pulse">
+                [ AUTH... ]
               </span>
             ) : session?.user ? (
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2">
                 <div className="hidden sm:flex flex-col text-right">
-                  <span className="text-xs font-mono text-[#e5e7eb]">
+                  <span className="text-xs text-[#e6edf3]">
                     {session.user.name || session.user.email}
                   </span>
-                  <span className="text-[10px] font-mono text-[#00ff66]/80 flex items-center justify-end gap-1">
-                    {session.user.isAdmin ? (
-                      <span className="text-[#ff5555] font-bold">[ROOT]</span>
-                    ) : (
-                      <span>[OPERATOR]</span>
-                    )}
+                  <span className="text-[9px] text-[var(--accent)] font-bold">
+                    {session.user.isAdmin ? "[ROOT]" : "[OP]"}
                   </span>
                 </div>
                 <button
                   onClick={() => signOut()}
-                  className="px-2.5 py-1 text-xs font-mono border border-[#374151] text-[#9ca3af] hover:text-[#ff5555] hover:border-[#ff5555] transition-colors flex items-center gap-1"
+                  className="px-2.5 py-1 text-xs border border-[#374151] text-[#9ca3af] hover:text-[#ff5555] hover:border-[#ff5555] transition-colors flex items-center gap-1 cursor-pointer"
                   title="Disconnect session"
                 >
                   <LogOut className="w-3.5 h-3.5" />
-                  <span className="hidden sm:inline">[LOGOUT]</span>
+                  <span className="hidden sm:inline">[EXIT]</span>
                 </button>
               </div>
             ) : (
-              <button
-                onClick={() => signIn()}
-                className="px-3 py-1.5 text-xs font-mono border border-[#00ff66]/60 text-[#00ff66] bg-[#00ff66]/10 hover:bg-[#00ff66]/20 hover:border-[#00ff66] transition-all flex items-center gap-1.5 cursor-pointer shadow-[0_0_8px_rgba(0,255,102,0.2)]"
+              <Link
+                href="/auth/signin"
+                className="px-3 py-1.5 text-xs border border-[var(--accent)] text-[var(--accent)] bg-[var(--accent-muted)] hover:brightness-125 transition-all flex items-center gap-1.5 cursor-pointer shadow-[0_0_10px_rgba(0,255,102,0.15)]"
               >
                 <LogIn className="w-3.5 h-3.5" />
                 <span>[CONNECT]</span>
-              </button>
+              </Link>
             )}
           </div>
         </div>

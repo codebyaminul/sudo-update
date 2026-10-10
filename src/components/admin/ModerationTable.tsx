@@ -145,7 +145,7 @@ export default function ModerationTable({
           </p>
         </div>
       ) : (
-        <div className="border border-[#1f2937] overflow-x-auto bg-[#0c1018]">
+        <div className="border border-[#1f2638] overflow-x-auto bg-[#0c1018] hud-chamfer">
           <table className="w-full text-left border-collapse text-xs">
             <thead>
               <tr className="border-b border-[#1f2937] bg-[#111620] text-[#8b949e] uppercase tracking-wider">

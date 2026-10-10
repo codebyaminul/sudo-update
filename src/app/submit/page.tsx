@@ -9,7 +9,7 @@ export default async function SubmitPage() {
 
   if (!user) {
     return (
-      <div className="max-w-xl mx-auto my-12 p-6 sm:p-8 border border-[#ff5555]/50 bg-[#120a0d] font-mono text-center space-y-4">
+      <div className="max-w-xl mx-auto my-12 p-6 sm:p-8 border border-[#ff5555]/50 bg-[#120a0d] font-mono text-center space-y-4 hud-chamfer">
         <div className="w-12 h-12 mx-auto border border-[#ff5555] bg-[#ff5555]/10 flex items-center justify-center text-[#ff5555]">
           <Lock className="w-6 h-6" />
         </div>
@@ -24,10 +24,10 @@ export default async function SubmitPage() {
 
         <div className="pt-2">
           <Link
-            href="/api/auth/signin"
-            className="inline-flex items-center gap-2 px-4 py-2 border border-[#00ff66] bg-[#00ff66]/10 text-[#00ff66] text-xs font-mono hover:bg-[#00ff66]/20 transition-all cursor-pointer shadow-[0_0_10px_rgba(0,255,102,0.2)]"
+            href="/auth/signin"
+            className="inline-flex items-center gap-2 px-4 py-2 border border-[var(--accent)] bg-[var(--accent-muted)] text-[var(--accent)] text-xs font-mono hover:brightness-125 transition-all cursor-pointer shadow-[0_0_10px_rgba(0,255,102,0.2)]"
           >
-            <span>[ INITIATE OAUTH HANDSHAKE ]</span>
+            <span>[ INITIATE CREDENTIALS HANDSHAKE ]</span>
           </Link>
         </div>
       </div>
@@ -35,23 +35,23 @@ export default async function SubmitPage() {
   }
 
   return (
-    <div className="max-w-3xl mx-auto space-y-6">
+    <div className="max-w-6xl mx-auto space-y-6">
       {/* Header bar */}
-      <div className="border border-[#1f2937] bg-[#0c1018] p-4 sm:p-6">
-        <div className="flex items-center gap-2 text-xs font-mono text-[#00ff66] mb-2">
+      <div className="border border-[#1f2638] bg-[#0c1018] p-4 sm:p-6 hud-chamfer-top">
+        <div className="flex items-center gap-2 text-xs font-mono text-[var(--accent)] mb-2">
           <Terminal className="w-4 h-4" />
-          <span>operator@{user.name || user.email}:~$ sudo intel --submit</span>
+          <span>operator@{user.name || user.email}:~$ sudo intel --submit --mode=live</span>
         </div>
-        <h1 className="text-xl sm:text-2xl font-bold font-mono text-[#e5e7eb] tracking-tight">
-          INTEL DISPATCH // <span className="text-[#00ff66]">SUBMISSION PORTAL</span>
+        <h1 className="text-xl sm:text-2xl font-bold font-mono text-[#e6edf3] tracking-tight">
+          INTEL DISPATCH // <span className="text-[var(--accent)] text-phosphor-glow">SUBMISSION PORTAL</span>
         </h1>
         <p className="text-xs font-mono text-[#8b949e] mt-1">
-          Submit community intelligence with reference links. All packets are held in the pending queue until approved by root.
+          Compose your intelligence dispatch with live real-time HUD rendering. Packets are held in the moderation buffer for root review.
         </p>
       </div>
 
       {/* Form Container */}
-      <div className="border border-[#1f2937] bg-[#0d121a] p-4 sm:p-6">
+      <div className="border border-[#1f2638] bg-[#0d121a] p-4 sm:p-6 hud-chamfer">
         <SubmitIntelForm />
       </div>
     </div>

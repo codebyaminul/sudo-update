@@ -91,7 +91,7 @@ export default async function AdminPage() {
   return (
     <div className="space-y-6">
       {/* Root Command Header */}
-      <div className="border border-[#1f2937] bg-[#0c1018] p-4 sm:p-6">
+      <div className="border border-[#1f2638] bg-[#0c1018] p-4 sm:p-6 hud-chamfer-top">
         <div className="flex items-center gap-2 text-xs font-mono text-[#ff5555] mb-2">
           <Terminal className="w-4 h-4" />
           <span>root@{user?.email}:~$ sudo moderate --queue=pending</span>

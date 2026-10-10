@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 import { PostCategory } from "@prisma/client";
 import { createPostSchema } from "@/lib/validations";
 import Input from "@/components/ui/Input";
@@ -9,11 +10,14 @@ import Select from "@/components/ui/Select";
 import Textarea from "@/components/ui/Textarea";
 import Button from "@/components/ui/Button";
 import TerminalImage from "@/components/ui/TerminalImage";
-import { CATEGORY_LABELS } from "@/types";
-import { Send, CheckCircle2, AlertTriangle, ArrowRight } from "lucide-react";
+import CategoryBadge from "@/components/ui/CategoryBadge";
+import SourceBadge from "@/components/feed/SourceBadge";
+import { CATEGORY_LABELS, PostWithAuthor } from "@/types";
+import { Send, CheckCircle2, AlertTriangle, Sparkles, Terminal, Clock, User, ArrowRight } from "lucide-react";
 
 export default function SubmitIntelForm() {
   const router = useRouter();
+  const { data: session } = useSession();
 
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
@@ -90,8 +94,8 @@ export default function SubmitIntelForm() {
 
   if (successPayload) {
     return (
-      <div className="border border-[#00ff66]/60 bg-[#0c140e] p-6 sm:p-8 space-y-4 font-mono">
-        <div className="flex items-center gap-3 text-[#00ff66]">
+      <div className="border border-[var(--accent)] bg-[#0c140e] p-6 sm:p-8 space-y-4 font-mono hud-chamfer">
+        <div className="flex items-center gap-3 text-[var(--accent)]">
           <CheckCircle2 className="w-8 h-8" />
           <div>
             <h2 className="text-lg font-bold">[ TRANSMISSION_ACK: 201_CREATED ]</h2>
@@ -107,7 +111,7 @@ export default function SubmitIntelForm() {
         </div>
 
         <p className="text-xs text-[#8b949e]">
-          Your dispatch has entered the root moderation buffer. Once inspected and authorized by a root administrator, it will be mirrored to the live public dispatches feed.
+          Your dispatch has entered the root moderation buffer. Once inspected and authorized by root, it will be mirrored to the live public dispatches feed.
         </p>
 
         <div className="flex items-center gap-3 pt-3">
@@ -131,117 +135,174 @@ export default function SubmitIntelForm() {
     );
   }
 
+  // Real-time Mock Card for live preview
+  const previewAuthor = session?.user?.name || session?.user?.email || "current_operator";
+
   return (
-    <form onSubmit={handleSubmit} className="space-y-6 font-mono">
-      {serverError && (
-        <div className="p-3 bg-[#ff5555]/10 border border-[#ff5555] text-[#ff5555] text-xs flex items-center gap-2">
-          <AlertTriangle className="w-4 h-4 shrink-0" />
-          <span>{serverError}</span>
-        </div>
-      )}
+    <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 font-mono items-start">
+      {/* Form Column */}
+      <form onSubmit={handleSubmit} className="lg:col-span-7 space-y-6">
+        {serverError && (
+          <div className="p-3 bg-[#ff5555]/10 border border-[#ff5555] text-[#ff5555] text-xs flex items-center gap-2">
+            <AlertTriangle className="w-4 h-4 shrink-0" />
+            <span>{serverError}</span>
+          </div>
+        )}
 
-      {/* Headline Title */}
-      <div className="space-y-1.5">
-        <label className="text-xs text-[#8b949e] uppercase tracking-wider block">
-          Dispatch Headline <span className="text-[#00ff66]">*</span>
-        </label>
-        <Input
-          promptPrefix="headline:~$ "
-          placeholder="e.g. Next.js 16 Drops Turbopack Build Times by 40%"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          error={errors.title}
-          maxLength={160}
-          required
-        />
-      </div>
-
-      {/* Category & Source Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {/* Headline Title */}
         <div className="space-y-1.5">
           <label className="text-xs text-[#8b949e] uppercase tracking-wider block">
-            Intelligence Category <span className="text-[#00ff66]">*</span>
-          </label>
-          <Select
-            promptPrefix="tag:~$ "
-            options={categoryOptions}
-            value={category}
-            onChange={(e) => setCategory(e.target.value as PostCategory)}
-            error={errors.category}
-          />
-        </div>
-
-        <div className="space-y-1.5">
-          <label className="text-xs text-[#8b949e] uppercase tracking-wider block">
-            Source Reference Link <span className="text-[#00ff66]">*</span>
+            Dispatch Headline <span className="text-[var(--accent)]">*</span>
           </label>
           <Input
-            promptPrefix="src:~$ "
-            type="url"
-            placeholder="https://example.com/press-release"
-            value={sourceUrl}
-            onChange={(e) => setSourceUrl(e.target.value)}
-            error={errors.sourceUrl}
+            promptPrefix="headline:~$ "
+            placeholder="e.g. Next.js 16 Drops Turbopack Build Times by 40%"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            error={errors.title}
+            maxLength={160}
             required
           />
         </div>
-      </div>
 
-      {/* Thumbnail Image URL & Preview */}
-      <div className="space-y-1.5">
-        <label className="text-xs text-[#8b949e] uppercase tracking-wider block">
-          Thumbnail Graphic URL (Optional)
-        </label>
-        <Input
-          promptPrefix="media:~$ "
-          type="url"
-          placeholder="https://images.unsplash.com/photo-..."
-          value={imageUrl}
-          onChange={(e) => setImageUrl(e.target.value)}
-          error={errors.imageUrl}
-        />
-
-        {imageUrl && (
-          <div className="mt-3 max-w-sm">
-            <span className="text-[10px] text-[#4b5563] mb-1 block uppercase">
-              Payload Media Preview:
-            </span>
-            <TerminalImage src={imageUrl} alt="Thumbnail preview" />
+        {/* Category & Source Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="space-y-1.5">
+            <label className="text-xs text-[#8b949e] uppercase tracking-wider block">
+              Intelligence Category <span className="text-[var(--accent)]">*</span>
+            </label>
+            <Select
+              promptPrefix="tag:~$ "
+              options={categoryOptions}
+              value={category}
+              onChange={(e) => setCategory(e.target.value as PostCategory)}
+              error={errors.category}
+            />
           </div>
-        )}
-      </div>
 
-      {/* Intel Content Body */}
-      <div className="space-y-1.5">
-        <label className="text-xs text-[#8b949e] uppercase tracking-wider block">
-          Intelligence Briefing / Body <span className="text-[#00ff66]">*</span>
-        </label>
-        <Textarea
-          promptPrefix="cat << INTEL_PAYLOAD"
-          placeholder="Detailed briefing, key takeaways, and breakdown of the dispatch..."
-          rows={6}
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-          error={errors.content}
-          required
-        />
-      </div>
+          <div className="space-y-1.5">
+            <label className="text-xs text-[#8b949e] uppercase tracking-wider block">
+              Source Reference Link <span className="text-[var(--accent)]">*</span>
+            </label>
+            <Input
+              promptPrefix="src:~$ "
+              type="url"
+              placeholder="https://example.com/press-release"
+              value={sourceUrl}
+              onChange={(e) => setSourceUrl(e.target.value)}
+              error={errors.sourceUrl}
+              required
+            />
+          </div>
+        </div>
 
-      {/* Submit Button */}
-      <div className="pt-2 flex items-center justify-between">
-        <span className="text-[11px] text-[#4b5563]">
-          &gt; All submissions subject to root review
-        </span>
-        <Button
-          type="submit"
-          variant="primary"
-          size="lg"
-          isLoading={isSubmitting}
-        >
-          <Send className="w-4 h-4" />
-          DISPATCH PACKET
-        </Button>
+        {/* Thumbnail Image URL */}
+        <div className="space-y-1.5">
+          <label className="text-xs text-[#8b949e] uppercase tracking-wider block">
+            Thumbnail Graphic URL (Optional)
+          </label>
+          <Input
+            promptPrefix="media:~$ "
+            type="url"
+            placeholder="https://images.unsplash.com/photo-..."
+            value={imageUrl}
+            onChange={(e) => setImageUrl(e.target.value)}
+            error={errors.imageUrl}
+          />
+        </div>
+
+        {/* Intel Content Body */}
+        <div className="space-y-1.5">
+          <label className="text-xs text-[#8b949e] uppercase tracking-wider block">
+            Intelligence Briefing / Body <span className="text-[var(--accent)]">*</span>
+          </label>
+          <Textarea
+            promptPrefix="cat << INTEL_PAYLOAD"
+            placeholder="Detailed briefing, key takeaways, and breakdown of the dispatch..."
+            rows={6}
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
+            error={errors.content}
+            required
+          />
+        </div>
+
+        {/* Submit Button */}
+        <div className="pt-2 flex items-center justify-between">
+          <span className="text-[11px] text-[#4b5563]">
+            &gt; Transmits to root buffer
+          </span>
+          <Button
+            type="submit"
+            variant="primary"
+            size="lg"
+            isLoading={isSubmitting}
+          >
+            <Send className="w-4 h-4" />
+            DISPATCH PACKET
+          </Button>
+        </div>
+      </form>
+
+      {/* Split-Screen Live Preview Column */}
+      <div className="lg:col-span-5 space-y-3 sticky top-24">
+        <div className="flex items-center justify-between text-xs text-[#8b949e] px-1">
+          <span className="flex items-center gap-1.5 text-[var(--accent)] font-bold">
+            <Sparkles className="w-3.5 h-3.5" />
+            LIVE_HUD_SIMULATION
+          </span>
+          <span className="text-[10px] text-[#4b5563]">[REAL-TIME PREVIEW]</span>
+        </div>
+
+        {/* Simulated Post Card */}
+        <div className="bg-[#0d131d] border border-[var(--accent)]/60 shadow-[0_0_20px_rgba(0,255,102,0.1)] hud-chamfer overflow-hidden">
+          {/* Header */}
+          <div className="flex items-center justify-between px-3.5 py-2 bg-[#101724] border-b border-[#1d273a] text-[11px] text-[#8b949e]">
+            <div className="flex items-center gap-2">
+              <CategoryBadge category={category} />
+              <span className="text-[#32435e]">|</span>
+              <span className="flex items-center gap-1 text-[#6b7280]">
+                <Clock className="w-3 h-3 text-[#4b5563]" />
+                JUST NOW
+              </span>
+            </div>
+            <div className="flex items-center gap-1 text-[#9ca3af]">
+              <User className="w-3 h-3 text-[var(--accent)]" />
+              <span className="truncate max-w-[100px]">@{previewAuthor}</span>
+            </div>
+          </div>
+
+          {/* Media preview */}
+          <TerminalImage
+            src={imageUrl || null}
+            alt={title || "Preview image"}
+            aspectRatio="video"
+          />
+
+          {/* Body */}
+          <div className="p-4 space-y-3">
+            <h3 className="text-base font-bold text-[#e6edf3] line-clamp-2 leading-snug">
+              {title || "[DISPATCH_HEADLINE_PLACEHOLDER]"}
+            </h3>
+
+            <p className="text-xs text-[#8b949e] line-clamp-3 leading-relaxed whitespace-pre-line">
+              {content || "Detailed intelligence body and findings will render here in real-time as you compose your payload..."}
+            </p>
+
+            <div className="pt-3 border-t border-[#1d273a] flex items-center justify-between">
+              <span className="text-xs border border-[#374151] px-2 py-0.5 text-[#9ca3af]">
+                [ ▲ 0 SIGNAL ]
+              </span>
+              <SourceBadge url={sourceUrl || "https://example.com"} />
+            </div>
+          </div>
+        </div>
+
+        <div className="p-3 bg-[#0c1018] border border-[#1f2937] text-[11px] text-[#6b7280] space-y-1">
+          <div>&gt; VERIFICATION: Strict URL protocol validation</div>
+          <div>&gt; CACHE_TAG: Tagged 'posts' upon root approval</div>
+        </div>
       </div>
-    </form>
+    </div>
   );
 }

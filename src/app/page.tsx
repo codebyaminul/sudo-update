@@ -135,42 +135,43 @@ export default async function HomePage({ searchParams }: PageProps) {
   return (
     <div className="space-y-6">
       {/* Terminal Hero / Status Header */}
-      <div className="border border-[#1f2937] bg-[#0c1018] p-4 sm:p-6 relative overflow-hidden">
-        <div className="absolute top-0 right-0 p-3 opacity-20 pointer-events-none">
-          <Cpu className="w-24 h-24 text-[#00ff66]" />
+      <div className="border border-[#1f2638] bg-[#0c1018] p-4 sm:p-6 relative overflow-hidden hud-chamfer-top">
+        <div className="absolute top-0 right-0 p-3 opacity-15 pointer-events-none">
+          <Cpu className="w-24 h-24 text-[var(--accent)]" />
         </div>
 
-        <div className="flex items-center gap-2 text-xs font-mono text-[#00ff66] mb-2">
+        <div className="flex items-center gap-2 text-xs font-mono text-[var(--accent)] mb-2">
           <Terminal className="w-4 h-4" />
           <span>guest@sudoupdate:~$ ./fetch_dispatches.sh --channel=public --sort={currentSort}</span>
+          <span className="inline-block w-2 h-4 bg-[var(--accent)] animate-blink" aria-hidden="true" />
         </div>
 
-        <h1 className="text-2xl sm:text-3xl font-bold font-mono text-[#e5e7eb] tracking-tight mb-2">
-          SUDO UPDATE // <span className="text-[#00ff66] text-phosphor-glow">INTELLIGENCE FEED</span>
+        <h1 className="text-2xl sm:text-3xl font-bold font-mono text-[#e6edf3] tracking-tight mb-2">
+          SUDO UPDATE // <span className="text-[var(--accent)] text-phosphor-glow">INTELLIGENCE FEED</span>
         </h1>
 
         <p className="text-xs sm:text-sm font-mono text-[#8b949e] max-w-2xl leading-relaxed">
           Community-verified dispatches covering Technology, Artificial Intelligence, Esports, Cinema, Sports, and Global Affairs. All submissions are cryptographically queued and root-moderated.
         </p>
 
-        <div className="mt-4 pt-4 border-t border-[#1f2937]/70 flex flex-wrap items-center gap-4 text-[11px] font-mono text-[#9ca3af]">
-          <span className="flex items-center gap-1.5 text-[#00ff66]">
+        <div className="mt-4 pt-4 border-t border-[#1f2638] flex flex-wrap items-center gap-4 text-[11px] font-mono text-[#9ca3af]">
+          <span className="flex items-center gap-1.5 text-[var(--accent)] font-bold">
             <ShieldCheck className="w-3.5 h-3.5" />
             CLEARANCE: VERIFIED ONLY
           </span>
-          <span className="text-[#4b5563]">|</span>
+          <span className="text-[#32435e]">|</span>
           <span>BUFFER COUNT: {posts.length} DISPATCHES</span>
-          <span className="text-[#4b5563]">|</span>
+          <span className="text-[#32435e]">|</span>
           {isDemoFallback ? (
             <span className="text-[#ffb454] flex items-center gap-1">
               <Database className="w-3 h-3" />
               MODE: LOCAL_DEMO_BUFFER
             </span>
           ) : (
-            <span className="text-[#00ff66]">MODE: LIVE_SUPABASE_POOL</span>
+            <span className="text-[var(--accent)]">MODE: LIVE_SUPABASE_POOL</span>
           )}
-          <span className="text-[#4b5563]">|</span>
-          <span className="text-[#59c2ff]">SORT: [{currentSort.toUpperCase()}]</span>
+          <span className="text-[#32435e]">|</span>
+          <span className="text-[#00f0ff]">SORT: [{currentSort.toUpperCase()}]</span>
         </div>
       </div>
 
