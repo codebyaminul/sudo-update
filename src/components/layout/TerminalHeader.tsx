@@ -14,16 +14,21 @@ import {
   Tv,
   Command,
   Palette,
+  Volume2,
+  VolumeX,
 } from "lucide-react";
 import { useTheme, TerminalTheme } from "@/components/layout/ThemeContext";
+import { soundEngine } from "@/lib/sound";
 
 export default function TerminalHeader() {
   const pathname = usePathname();
   const { data: session, status } = useSession();
   const { theme, setTheme, scanlines, toggleScanlines } = useTheme();
   const [timecode, setTimecode] = useState("");
+  const [sfxEnabled, setSfxEnabled] = useState(true);
 
   useEffect(() => {
+    setSfxEnabled(soundEngine.isEnabled());
     const updateClock = () => {
       const now = new Date();
       setTimecode(now.toISOString().substring(11, 19) + "Z");
@@ -134,12 +139,36 @@ export default function TerminalHeader() {
               <Tv className="w-3.5 h-3.5" />
             </button>
 
+            {/* Synthesizer Audio SFX Toggle */}
+            <button
+              onClick={() => {
+                const next = soundEngine.toggle();
+                setSfxEnabled(next);
+              }}
+              className={`p-1.5 text-xs border transition-colors cursor-pointer ${
+                sfxEnabled
+                  ? "border-[var(--accent)] text-[var(--accent)] bg-[var(--accent-muted)]"
+                  : "border-[#27354a] text-[#4b5563] hover:text-[#8b949e]"
+              }`}
+              title={`Terminal Synthesizer Audio (${sfxEnabled ? "ON" : "MUTED"})`}
+              aria-label="Toggle Terminal Synthesizer Audio"
+            >
+              {sfxEnabled ? (
+                <Volume2 className="w-3.5 h-3.5" />
+              ) : (
+                <VolumeX className="w-3.5 h-3.5" />
+              )}
+            </button>
+
             {/* Phosphor Theme Switcher */}
             <div className="flex items-center border border-[#1f2638] bg-[#0c1018] p-0.5">
               {themes.map((t) => (
                 <button
                   key={t.id}
-                  onClick={() => setTheme(t.id)}
+                  onClick={() => {
+                    soundEngine.playThemeSwitch();
+                    setTheme(t.id);
+                  }}
                   aria-label={`Switch to ${t.label} theme`}
                   className={`w-5 h-5 flex items-center justify-center transition-all cursor-pointer ${
                     theme === t.id
@@ -163,14 +192,18 @@ export default function TerminalHeader() {
               </span>
             ) : session?.user ? (
               <div className="flex items-center gap-2">
-                <div className="hidden sm:flex flex-col text-right">
+                <Link
+                  href="/profile"
+                  className="hidden sm:flex flex-col text-right hover:opacity-85 transition-opacity"
+                  title="Inspect Operator Dossier"
+                >
                   <span className="text-xs text-[#e6edf3]">
                     {session.user.name || session.user.email}
                   </span>
                   <span className="text-[9px] text-[var(--accent)] font-bold">
-                    {session.user.isAdmin ? "[ROOT]" : "[OP]"}
+                    {session.user.isAdmin ? "[ROOT_ADMIN]" : "[OPERATOR]"}
                   </span>
-                </div>
+                </Link>
                 <button
                   onClick={() => signOut()}
                   className="px-2.5 py-1 text-xs border border-[#374151] text-[#9ca3af] hover:text-[#ff5555] hover:border-[#ff5555] transition-colors flex items-center gap-1 cursor-pointer"

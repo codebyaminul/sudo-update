@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { ArrowBigUp, Zap } from "lucide-react";
+import { soundEngine } from "@/lib/sound";
 
 interface BoostButtonProps {
   postId: string;
@@ -39,6 +40,12 @@ export default function BoostButton({
     const previousCount = count;
     const nextState = !previousState;
     const nextCount = nextState ? previousCount + 1 : Math.max(0, previousCount - 1);
+
+    if (nextState) {
+      soundEngine.playBoostChirp();
+    } else {
+      soundEngine.playKeyClick();
+    }
 
     setHasBoosted(nextState);
     setCount(nextCount);

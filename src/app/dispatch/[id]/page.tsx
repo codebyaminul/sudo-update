@@ -219,11 +219,17 @@ export default async function DispatchDetailPage({ params }: DispatchPageProps) 
             </span>
           </div>
 
-          <div className="flex items-center gap-1.5 text-[#9ca3af]">
+          <Link
+            href={`/operator/${post.author?.id || post.authorId || "root"}`}
+            className="flex items-center gap-1.5 text-[#9ca3af] hover:text-[var(--accent)] transition-colors"
+            title={`Inspect @${authorName} dossier`}
+          >
             <User className="w-3.5 h-3.5 text-[var(--accent)]" />
             <span>TRANSMITTED BY:</span>
-            <span className="text-[#e6edf3] font-bold">@{authorName}</span>
-          </div>
+            <span className="text-[#e6edf3] font-bold hover:underline">
+              @{authorName}
+            </span>
+          </Link>
         </div>
 
         {/* Title */}

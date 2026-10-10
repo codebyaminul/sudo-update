@@ -69,6 +69,20 @@ export default function CommandPalette() {
       action: () => router.push("/admin"),
     },
     {
+      id: "nav-profile",
+      label: "Navigate: Operator Identity Dossier (/profile)",
+      category: "Navigation",
+      icon: Compass,
+      action: () => router.push("/profile"),
+    },
+    {
+      id: "api-feed",
+      label: "CLI Command: Stream Real-Time Dispatches (/api/feed)",
+      category: "Developer",
+      icon: Terminal,
+      action: () => window.open("/api/feed", "_blank"),
+    },
+    {
       id: "cat-tech",
       label: "Filter: #TECH Dispatches",
       category: "Filter",

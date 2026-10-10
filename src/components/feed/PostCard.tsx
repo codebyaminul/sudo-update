@@ -49,10 +49,14 @@ export default function PostCard({ post, isFocused, cardId }: PostCardProps) {
             {formatTerminalDate(post.createdAt)}
           </span>
         </div>
-        <div className="flex items-center gap-1 text-[#9ca3af]">
+        <Link
+          href={`/operator/${post.author?.id || post.authorId || "root"}`}
+          className="flex items-center gap-1 text-[#9ca3af] hover:text-[var(--accent)] transition-colors"
+          title={`Inspect @${authorName} dossier`}
+        >
           <User className="w-3 h-3 text-[var(--accent)]" />
           <span className="truncate max-w-[110px]">@{authorName}</span>
-        </div>
+        </Link>
       </div>
 
       {/* Media Thumbnail */}

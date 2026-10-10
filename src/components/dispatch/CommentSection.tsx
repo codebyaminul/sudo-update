@@ -194,10 +194,14 @@ export default function CommentSection({
                 {/* Comment Metadata Bar */}
                 <div className="flex items-center justify-between text-[11px] border-b border-[#141b27] pb-2">
                   <div className="flex items-center gap-2 flex-wrap">
-                    <span className="flex items-center gap-1 text-[#e6edf3] font-bold">
+                    <Link
+                      href={`/operator/${comment.author?.id || comment.authorId || "root"}`}
+                      className="flex items-center gap-1 text-[#e6edf3] font-bold hover:text-[var(--accent)] transition-colors"
+                      title={`Inspect @${authorName} dossier`}
+                    >
                       <User className="w-3 h-3 text-[var(--accent)]" />
                       @{authorName}
-                    </span>
+                    </Link>
                     <span
                       className={`text-[9px] px-1 py-0.2 border ${
                         comment.author?.isAdmin
