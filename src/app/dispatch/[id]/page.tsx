@@ -36,27 +36,55 @@ export async function generateMetadata({
   const { id } = await params;
   let title = "Dispatch Briefing // sudo update";
   let description = "Community-verified intelligence briefing on sudo update.";
+  let ogImageUrl = `/api/og?title=${encodeURIComponent(title)}`;
 
   try {
     const post = await prisma.post.findUnique({
       where: { id },
-      select: { title: true, content: true },
+      select: {
+        title: true,
+        content: true,
+        category: true,
+        author: { select: { name: true, email: true } },
+        _count: { select: { boosts: true } },
+      },
     });
     if (post) {
       title = `${post.title} // sudo update`;
       description = post.content.slice(0, 160);
+      const author = post.author?.name || post.author?.email || "anonymous_operator";
+      ogImageUrl = `/api/og?title=${encodeURIComponent(post.title)}&category=${post.category}&author=${encodeURIComponent(author)}&boosts=${post._count?.boosts ?? 0}`;
     }
   } catch {
     const demo = DEMO_POSTS.find((p) => p.id === id);
     if (demo) {
       title = `${demo.title} // sudo update`;
       description = demo.content.slice(0, 160);
+      ogImageUrl = `/api/og?title=${encodeURIComponent(demo.title)}&category=${demo.category}&author=root_operator&boosts=18`;
     }
   }
 
   return {
     title,
     description,
+    openGraph: {
+      title,
+      description,
+      images: [
+        {
+          url: ogImageUrl,
+          width: 1200,
+          height: 630,
+          alt: title,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: [ogImageUrl],
+    },
   };
 }
 

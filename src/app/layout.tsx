@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist_Mono } from "next/font/google";
 import "./globals.css";
 import TerminalHeader from "@/components/layout/TerminalHeader";
+import BroadcastTicker from "@/components/layout/BroadcastTicker";
 import TerminalFooter from "@/components/layout/TerminalFooter";
 import SessionProvider from "@/components/auth/SessionProvider";
 import { ThemeProvider } from "@/components/layout/ThemeContext";
@@ -32,6 +33,7 @@ export default function RootLayout({
             <KeymapModal />
             <div className="flex flex-col min-h-screen">
               <TerminalHeader />
+              <BroadcastTicker />
               <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
                 {children}
               </main>
