@@ -41,8 +41,8 @@ export default function CategoryFilter() {
           onClick={() => handleCategorySelect(null)}
           className={`px-2.5 py-1 text-xs font-mono border transition-all select-none cursor-pointer ${
             !currentCategory
-              ? "border-[#00ff66] text-[#00ff66] bg-[#00ff66]/10 shadow-[0_0_8px_rgba(0,255,102,0.25)]"
-              : "border-[#1f2937] text-[#9ca3af] hover:text-[#00ff66] hover:border-[#374151]"
+              ? "border-[var(--accent)] text-[var(--accent)] bg-[var(--accent-muted)] shadow-[0_0_8px_rgba(0,255,102,0.25)]"
+              : "border-[#1f2937] text-[#9ca3af] hover:text-[var(--accent)] hover:border-[#374151]"
           }`}
         >
           [ALL]
@@ -56,8 +56,8 @@ export default function CategoryFilter() {
               onClick={() => handleCategorySelect(cat)}
               className={`px-2.5 py-1 text-xs font-mono border transition-all whitespace-nowrap select-none cursor-pointer ${
                 isSelected
-                  ? "border-[#00ff66] text-[#00ff66] bg-[#00ff66]/10 shadow-[0_0_8px_rgba(0,255,102,0.25)]"
-                  : "border-[#1f2937] text-[#9ca3af] hover:text-[#00ff66] hover:border-[#374151]"
+                  ? "border-[var(--accent)] text-[var(--accent)] bg-[var(--accent-muted)] shadow-[0_0_8px_rgba(0,255,102,0.25)]"
+                  : "border-[#1f2937] text-[#9ca3af] hover:text-[var(--accent)] hover:border-[#374151]"
               }`}
             >
               [{CATEGORY_LABELS[cat]}]
@@ -87,8 +87,8 @@ export default function CategoryFilter() {
           onClick={() => handleSortSelect("top")}
           className={`px-2.5 py-1 text-xs font-mono border transition-all flex items-center gap-1 cursor-pointer ${
             currentSort === "top"
-              ? "border-[#00ff66] text-[#00ff66] bg-[#00ff66]/10 shadow-[0_0_8px_rgba(0,255,102,0.25)]"
-              : "border-[#1f2937] text-[#9ca3af] hover:text-[#00ff66]"
+              ? "border-[var(--accent)] text-[var(--accent)] bg-[var(--accent-muted)] shadow-[0_0_8px_rgba(0,255,102,0.25)]"
+              : "border-[#1f2937] text-[#9ca3af] hover:text-[var(--accent)]"
           }`}
         >
           <Flame className="w-3 h-3" />
